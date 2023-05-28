@@ -5,6 +5,21 @@ import DatePicker from "react-datepicker";
 
 import "react-datepicker/dist/react-datepicker.css";
 
+const months = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "Septemper",
+  "October",
+  "November",
+  "December",
+];
+
 export default function Content() {
   const [startDate, setStartDate] = useState<Date | null>(null);
 
@@ -19,12 +34,12 @@ export default function Content() {
     let resultContent = [];
 
     for (let i = 0; i < differenceInDays; i++) {
+      const date = new Date(new Date().getTime() + 24 * 60 * 60 * 1000 * i);
+
       resultContent.push(
-        <div
-          key={i}
-          className="text-5xl text-center text-white bg-transparent border-b-2 border-white border-solid outline-none"
-        >
-          {i}
+        <div key={i} className="flex flex-col items-center">
+          <span>{date.getDate()}</span>
+          <span>{months[date.getMonth()]}</span>
         </div>
       );
     }
