@@ -1,8 +1,10 @@
+import Content from "~/components/Content";
+
 export default function Home() {
   return (
     <>
       {/* <h2>Welcome to Countdown</h2> */}
-      <div>
+      <div className="flex flex-col items-center justify-center gap-10">
         <p>
           <span className="text-md">How many days until the </span>
           <input
@@ -11,6 +13,9 @@ export default function Home() {
             style={{ width: "fit-content" }}
           />
         </p>
+        <div>
+          <Content />
+        </div>
       </div>
     </>
   );
