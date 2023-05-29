@@ -23,7 +23,7 @@ const months = [
 export default function Content() {
   const [startDate, setStartDate] = useState<Date | null>(null);
 
-  const dateDifference = useMemo(() => {
+  const daysArray = useMemo(() => {
     if (!startDate) return;
 
     const today = new Date();
@@ -37,8 +37,11 @@ export default function Content() {
       const date = new Date(new Date().getTime() + 24 * 60 * 60 * 1000 * i);
 
       resultContent.push(
-        <div key={i} className="flex flex-col items-center">
-          <span>{date.getDate()}</span>
+        <div
+          key={i}
+          className="grid text-center bg-transparent border-2 border-white rounded-md place-content-center aspect-square"
+        >
+          <span className="text-4xl">{date.getDate()}</span>
           <span>{months[date.getMonth()]}</span>
         </div>
       );
@@ -48,17 +51,21 @@ export default function Content() {
   }, [startDate]);
 
   return (
-    <div className="flex flex-col items-center gap-4">
-      <p className="text-xl">It will happen on</p>
-      <DatePicker
-        dateFormat={"dd/MM/yyyy"}
-        minDate={new Date(new Date().getTime() + 24 * 60 * 60 * 1000)}
-        selected={startDate}
-        onChange={(date) => setStartDate(date)}
-        className="py-2 text-xl text-center text-white bg-transparent border-b-2 border-white border-solid outline-none"
-        placeholderText="Click to select a date"
-      />
-      <div>{dateDifference}</div>
-    </div>
+    <>
+      <div className="flex flex-col items-center w-full gap-4">
+        <p className="text-xl">It will happen on</p>
+        <div className="mx-auto">
+          <DatePicker
+            dateFormat={"dd/MM/yyyy"}
+            minDate={new Date(new Date().getTime() + 24 * 60 * 60 * 1000)}
+            selected={startDate}
+            onChange={(date) => setStartDate(date)}
+            className="py-2 text-xl text-center text-white bg-transparent border-b-2 border-white border-solid outline-none"
+            placeholderText="Click to select a date"
+          />
+        </div>
+      </div>
+      <div className="grid w-full grid-cols-8 gap-2 px-6">{daysArray}</div>
+    </>
   );
 }

@@ -13,9 +13,7 @@ export default function Home() {
             style={{ width: "fit-content" }}
           />
         </p>
-        <div>
-          <Content />
-        </div>
+        <Content />
       </div>
     </>
   );
