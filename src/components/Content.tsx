@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import DatePicker from "react-datepicker";
+import { BsCheckLg } from "react-icons/bs";
 
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -54,7 +55,7 @@ export default function Content() {
     <>
       <div className="flex flex-col items-center w-full gap-4">
         <p className="text-xl">It will happen on</p>
-        <div className="mx-auto">
+        <div className="flex flex-col items-center gap-8 mx-auto">
           <DatePicker
             dateFormat={"dd/MM/yyyy"}
             minDate={new Date(new Date().getTime() + 24 * 60 * 60 * 1000)}
@@ -64,6 +65,9 @@ export default function Content() {
             placeholderText="Click to select a date"
           />
         </div>
+        <button className="flex items-center gap-2 px-8 py-4 duration-150 bg-blue-500 rounded-md hover:bg-blue-700 active:scale-90">
+          Check another day <BsCheckLg className="text-xl" />
+        </button>
       </div>
       <div className="grid w-full grid-cols-8 gap-2 px-6">{daysArray}</div>
     </>
