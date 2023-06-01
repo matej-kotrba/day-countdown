@@ -24,8 +24,6 @@ const months = [
   "December",
 ];
 
-const StyledDateDiv = styled("div")``;
-
 export default function Content() {
   const [doesLoadData, setDoesLoadData] = useState<boolean>(true);
   const [getFromLocalStorage, setToLocalStorage] = useLocalStorage();
@@ -49,8 +47,8 @@ export default function Content() {
       resultContent.push(
         <div
           key={i}
-          className={`grid text-center bg-transparent border-2 border-white rounded-md place-content-center aspect-square 
-          ${i < daysCompletedCount ? "bg-green-500" : ""}`}
+          className={`grid text-center border-2 border-white rounded-md place-content-center aspect-square 
+          ${i < daysCompletedCount ? "bg-green-500" : "bg-transparent"}`}
         >
           <span className="text-4xl">{date.getDate()}</span>
           <span>{months[date.getMonth()]}</span>
@@ -92,15 +90,44 @@ export default function Content() {
                 placeholderText="Click to select a date"
               />
             </div>
-            <button
-              onClick={() => {
-                setToLocalStorage("daysCompletedCount", daysCompletedCount + 1);
-                setDaysCompletedCount((old) => old + 1);
-              }}
-              className="flex items-center gap-2 px-8 py-4 duration-150 bg-blue-500 rounded-md hover:bg-blue-700 active:scale-90"
-            >
-              Check another day <BsCheckLg className="text-xl" />
-            </button>
+            <div className="flex items-end gap-2">
+              <button
+                onClick={() => {
+                  setToLocalStorage(
+                    "daysCompletedCount",
+                    daysCompletedCount + 1
+                  );
+                  setDaysCompletedCount((old) => old + 1);
+                  console.log(daysCompletedCount);
+                }}
+                className="flex items-center gap-2 px-8 py-4 duration-150 bg-blue-500 rounded-md hover:bg-blue-700 active:scale-90"
+              >
+                Check another day <BsCheckLg className="text-xl" />
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setToLocalStorage(
+                    "daysCompletedCount",
+                    (function () {
+                      if (daysCompletedCount !== 0) {
+                        return daysCompletedCount - 1;
+                      }
+                      return daysCompletedCount;
+                    })()
+                  );
+                  setDaysCompletedCount((old) => {
+                    if (old !== 0) {
+                      return old - 1;
+                    }
+                    return old;
+                  });
+                }}
+                className="grid w-8 duration-150 bg-transparent border-2 border-solid rounded-lg hover:bg-slate-700 aspect-square border-slate-300 place-content-center"
+              >
+                <span>-</span>
+              </button>
+            </div>
           </div>
           <div className="grid w-full grid-cols-8 gap-2 px-6">{daysArray}</div>
         </>
