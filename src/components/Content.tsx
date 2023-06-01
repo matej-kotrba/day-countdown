@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import { BsCheckLg } from "react-icons/bs";
 import useLocalStorage from "~/hooks/useLocalStorage";
@@ -23,11 +23,10 @@ const months = [
 ];
 
 export default function Content() {
+  const [doesLoadData, setDoesLoadData] = useState<boolean>(true);
   const [getFromLocalStorage, setToLocalStorage] = useLocalStorage();
 
-  const [endDate, setEndDate] = useState<Date | null>(
-    new Date(getFromLocalStorage("endDateTime")) ?? null
-  );
+  const [endDate, setEndDate] = useState<Date | null>(null);
 
   const daysArray = useMemo(() => {
     if (!endDate) return;
@@ -56,28 +55,42 @@ export default function Content() {
     return resultContent;
   }, [endDate]);
 
+  useEffect(() => {
+    const storedData = getFromLocalStorage("endDateTime");
+    if (storedData) setEndDate(new Date(getFromLocalStorage("endDateTime")));
+
+    setDoesLoadData(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <>
-      <div className="flex flex-col items-center w-full gap-4">
-        <p className="text-xl">It will happen on</p>
-        <div className="flex flex-col items-center gap-8 mx-auto">
-          <DatePicker
-            dateFormat={"dd/MM/yyyy"}
-            minDate={new Date(new Date().getTime() + 24 * 60 * 60 * 1000)}
-            selected={endDate}
-            onChange={(date) => {
-              setEndDate(date);
-              setToLocalStorage("endDateTime", date?.getTime());
-            }}
-            className="py-2 text-xl text-center text-white bg-transparent border-b-2 border-white border-solid outline-none"
-            placeholderText="Click to select a date"
-          />
-        </div>
-        <button className="flex items-center gap-2 px-8 py-4 duration-150 bg-blue-500 rounded-md hover:bg-blue-700 active:scale-90">
-          Check another day <BsCheckLg className="text-xl" />
-        </button>
-      </div>
-      <div className="grid w-full grid-cols-8 gap-2 px-6">{daysArray}</div>
+      {doesLoadData ? (
+        <p>Loading ....</p>
+      ) : (
+        <>
+          <div className="flex flex-col items-center w-full gap-4">
+            <p className="text-xl">It will happen on</p>
+            <div className="flex flex-col items-center gap-8 mx-auto">
+              <DatePicker
+                dateFormat={"dd/MM/yyyy"}
+                minDate={new Date(new Date().getTime() + 24 * 60 * 60 * 1000)}
+                selected={endDate}
+                onChange={(date) => {
+                  setEndDate(date);
+                  setToLocalStorage("endDateTime", date?.getTime());
+                }}
+                className="py-2 text-xl text-center text-white bg-transparent border-b-2 border-white border-solid outline-none"
+                placeholderText="Click to select a date"
+              />
+            </div>
+            <button className="flex items-center gap-2 px-8 py-4 duration-150 bg-blue-500 rounded-md hover:bg-blue-700 active:scale-90">
+              Check another day <BsCheckLg className="text-xl" />
+            </button>
+          </div>
+          <div className="grid w-full grid-cols-8 gap-2 px-6">{daysArray}</div>
+        </>
+      )}
     </>
   );
 }

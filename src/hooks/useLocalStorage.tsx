@@ -1,5 +1,6 @@
 export default function useLocalStorage() {
   function getFromLocalStorage(key: string) {
+    if (typeof window === "undefined") return;
     const item = localStorage.getItem(key);
     if (!item) return;
     return JSON.parse(item);
