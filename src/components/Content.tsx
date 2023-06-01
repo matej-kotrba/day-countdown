@@ -4,6 +4,8 @@ import { useState, useMemo, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import { BsCheckLg } from "react-icons/bs";
 import useLocalStorage from "~/hooks/useLocalStorage";
+import Loader from "./Loader";
+import styled from "@emotion/styled";
 
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -22,11 +24,14 @@ const months = [
   "December",
 ];
 
+const StyledDateDiv = styled("div")``;
+
 export default function Content() {
   const [doesLoadData, setDoesLoadData] = useState<boolean>(true);
   const [getFromLocalStorage, setToLocalStorage] = useLocalStorage();
 
   const [endDate, setEndDate] = useState<Date | null>(null);
+  const [daysCompletedCount, setDaysCompletedCount] = useState<number>(0);
 
   const daysArray = useMemo(() => {
     if (!endDate) return;
@@ -44,7 +49,8 @@ export default function Content() {
       resultContent.push(
         <div
           key={i}
-          className="grid text-center bg-transparent border-2 border-white rounded-md place-content-center aspect-square"
+          className={`grid text-center bg-transparent border-2 border-white rounded-md place-content-center aspect-square 
+          ${i < daysCompletedCount ? "bg-green-500" : ""}`}
         >
           <span className="text-4xl">{date.getDate()}</span>
           <span>{months[date.getMonth()]}</span>
@@ -53,11 +59,13 @@ export default function Content() {
     }
 
     return resultContent;
-  }, [endDate]);
+  }, [endDate, daysCompletedCount]);
 
   useEffect(() => {
     const storedData = getFromLocalStorage("endDateTime");
     if (storedData) setEndDate(new Date(getFromLocalStorage("endDateTime")));
+    const daysCount = getFromLocalStorage("daysCompletedCount");
+    if (daysCount) setDaysCompletedCount(daysCount);
 
     setDoesLoadData(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -66,7 +74,7 @@ export default function Content() {
   return (
     <>
       {doesLoadData ? (
-        <p>Loading ....</p>
+        <Loader />
       ) : (
         <>
           <div className="flex flex-col items-center w-full gap-4">
@@ -84,7 +92,13 @@ export default function Content() {
                 placeholderText="Click to select a date"
               />
             </div>
-            <button className="flex items-center gap-2 px-8 py-4 duration-150 bg-blue-500 rounded-md hover:bg-blue-700 active:scale-90">
+            <button
+              onClick={() => {
+                setToLocalStorage("daysCompletedCount", daysCompletedCount + 1);
+                setDaysCompletedCount((old) => old + 1);
+              }}
+              className="flex items-center gap-2 px-8 py-4 duration-150 bg-blue-500 rounded-md hover:bg-blue-700 active:scale-90"
+            >
               Check another day <BsCheckLg className="text-xl" />
             </button>
           </div>
