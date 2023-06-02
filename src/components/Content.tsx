@@ -29,15 +29,14 @@ export default function Content() {
   const [getFromLocalStorage, setToLocalStorage] = useLocalStorage();
 
   const [endDate, setEndDate] = useState<Date | null>(null);
+  const [startDate, setStartDate] = useState<Date | null>(null);
   const [daysCompletedCount, setDaysCompletedCount] = useState<number>(0);
 
   const daysArray = useMemo(() => {
-    if (!endDate) return;
-
-    const today = new Date();
+    if (!endDate || !startDate) return;
 
     let differenceInDays =
-      (endDate?.getTime()! - today.getTime()) / 1000 / 60 / 60 / 24;
+      (endDate?.getTime()! - startDate?.getTime()) / 1000 / 60 / 60 / 24;
 
     let resultContent = [];
 
@@ -57,13 +56,15 @@ export default function Content() {
     }
 
     return resultContent;
-  }, [endDate, daysCompletedCount]);
+  }, [endDate, startDate, daysCompletedCount]);
 
   useEffect(() => {
     const storedData = getFromLocalStorage("endDateTime");
-    if (storedData) setEndDate(new Date(getFromLocalStorage("endDateTime")));
+    if (storedData) setEndDate(new Date(storedData));
     const daysCount = getFromLocalStorage("daysCompletedCount");
     if (daysCount) setDaysCompletedCount(daysCount);
+    const startDate = getFromLocalStorage("startDateTime");
+    if (startDate) setStartDate(new Date(startDate));
 
     setDoesLoadData(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -76,19 +77,41 @@ export default function Content() {
       ) : (
         <>
           <div className="flex flex-col items-center w-full gap-4">
-            <p className="text-xl">It will happen on</p>
-            <div className="flex flex-col items-center gap-8 mx-auto">
-              <DatePicker
-                dateFormat={"dd/MM/yyyy"}
-                minDate={new Date(new Date().getTime() + 24 * 60 * 60 * 1000)}
-                selected={endDate}
-                onChange={(date) => {
-                  setEndDate(date);
-                  setToLocalStorage("endDateTime", date?.getTime());
-                }}
-                className="py-2 text-xl text-center text-white bg-transparent border-b-2 border-white border-solid outline-none"
-                placeholderText="Click to select a date"
-              />
+            <div>
+              <div>
+                <p className="text-xl">It will start from</p>
+                <div className="flex flex-col items-center gap-8 mx-auto">
+                  <DatePicker
+                    dateFormat={"dd/MM/yyyy"}
+                    maxDate={endDate ? endDate : undefined}
+                    selected={startDate}
+                    onChange={(date) => {
+                      setEndDate(date);
+                      setToLocalStorage("endDateTime", date?.getTime());
+                    }}
+                    className="py-2 text-xl text-center text-white bg-transparent border-b-2 border-white border-solid outline-none"
+                    placeholderText="Click to select a date"
+                  />
+                </div>
+              </div>
+              <div>
+                <p className="text-xl">It will happen on</p>
+                <div className="flex flex-col items-center gap-8 mx-auto">
+                  <DatePicker
+                    dateFormat={"dd/MM/yyyy"}
+                    minDate={
+                      new Date(new Date().getTime() + 24 * 60 * 60 * 1000)
+                    }
+                    selected={endDate}
+                    onChange={(date) => {
+                      setEndDate(date);
+                      setToLocalStorage("endDateTime", date?.getTime());
+                    }}
+                    className="py-2 text-xl text-center text-white bg-transparent border-b-2 border-white border-solid outline-none"
+                    placeholderText="Click to select a date"
+                  />
+                </div>
+              </div>
             </div>
             <div className="flex items-end gap-2">
               <button
