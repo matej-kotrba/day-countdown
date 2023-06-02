@@ -96,9 +96,9 @@ export default function Content() {
       ) : (
         <>
           <div className="flex flex-col items-center w-full gap-4">
-            <div>
+            <div className="flex gap-2">
               <div>
-                <p className="text-xl">It will start from</p>
+                <p className="text-xl text-center">It will start from</p>
                 <div className="flex flex-col items-center gap-8 mx-auto">
                   <DatePicker
                     dateFormat={"dd/MM/yyyy"}
@@ -109,13 +109,13 @@ export default function Content() {
                       setToLocalStorage("startDateTime", date?.getTime());
                       setDaysCompletedCount(0);
                     }}
-                    className="py-2 text-xl text-center text-white bg-transparent border-b-2 border-white border-solid outline-none"
+                    className="py-2 text-xl text-center text-white bg-transparent outline-none"
                     placeholderText="Click to select a date"
                   />
                 </div>
               </div>
               <div>
-                <p className="text-xl">It will happen on</p>
+                <p className="text-xl text-center">It will happen on</p>
                 <div className="flex flex-col items-center gap-8 mx-auto">
                   <DatePicker
                     dateFormat={"dd/MM/yyyy"}
@@ -127,7 +127,7 @@ export default function Content() {
                       setEndDate(date);
                       setToLocalStorage("endDateTime", date?.getTime());
                     }}
-                    className="py-2 text-xl text-center text-white bg-transparent border-b-2 border-white border-solid outline-none"
+                    className="py-2 text-xl text-center text-white bg-transparent outline-none"
                     placeholderText="Click to select a date"
                   />
                 </div>
@@ -141,7 +141,7 @@ export default function Content() {
                 ${
                   startTodayDateDayDifference > daysCompletedCount
                     ? "opacity-100"
-                    : "opacity-100 pointer-events-none"
+                    : "opacity-0 pointer-events-none"
                 }}`}
                 onClick={() => {
                   changeDaysCompletedCount(startTodayDateDayDifference);
