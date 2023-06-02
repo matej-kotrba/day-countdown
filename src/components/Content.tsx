@@ -96,7 +96,7 @@ export default function Content() {
       ) : (
         <>
           <div className="flex flex-col items-center w-full gap-4">
-            <div className="flex gap-2">
+            <div className="flex gap-4">
               <div>
                 <p className="text-xl text-center">It will start from</p>
                 <div className="flex flex-col items-center gap-8 mx-auto">
@@ -109,7 +109,7 @@ export default function Content() {
                       setToLocalStorage("startDateTime", date?.getTime());
                       setDaysCompletedCount(0);
                     }}
-                    className="py-2 text-xl text-center text-white bg-transparent outline-none"
+                    className="py-2 text-xl text-center text-white duration-150 bg-transparent border-b-2 border-white border-solid outline-none bg-slate-800 rounded-t-md focus-within:bg-slate-700"
                     placeholderText="Click to select a date"
                   />
                 </div>
@@ -127,7 +127,7 @@ export default function Content() {
                       setEndDate(date);
                       setToLocalStorage("endDateTime", date?.getTime());
                     }}
-                    className="py-2 text-xl text-center text-white bg-transparent outline-none"
+                    className="py-2 text-xl text-center text-white duration-150 bg-transparent border-b-2 border-white border-solid outline-none bg-slate-800 rounded-t-md focus-within:bg-slate-700"
                     placeholderText="Click to select a date"
                   />
                 </div>
