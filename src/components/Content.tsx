@@ -24,6 +24,13 @@ const months = [
   "December",
 ];
 
+const StyledGridButtonLayout = styled("div")`
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 0.5rem;
+  align-items: end;
+`;
+
 export default function Content() {
   const [doesLoadData, setDoesLoadData] = useState<boolean>(true);
   const [getFromLocalStorage, setToLocalStorage] = useLocalStorage();
@@ -40,8 +47,8 @@ export default function Content() {
 
     let resultContent = [];
 
-    for (let i = 0; i < differenceInDays; i++) {
-      const date = new Date(new Date().getTime() + 24 * 60 * 60 * 1000 * i);
+    for (let i = 0; i <= differenceInDays; i++) {
+      const date = new Date(startDate.getTime() + 24 * 60 * 60 * 1000 * i);
 
       resultContent.push(
         <div
@@ -57,6 +64,18 @@ export default function Content() {
 
     return resultContent;
   }, [endDate, startDate, daysCompletedCount]);
+
+  const startTodayDateDayDifference = useMemo(() => {
+    if (!startDate) return 0;
+    return Math.floor(
+      (new Date().getTime() - startDate.getTime()) / 1000 / 60 / 60 / 24
+    );
+  }, [startDate]);
+
+  function changeDaysCompletedCount(daysCompletedCount: number) {
+    setDaysCompletedCount(daysCompletedCount);
+    setToLocalStorage("daysCompletedCount", daysCompletedCount);
+  }
 
   useEffect(() => {
     const storedData = getFromLocalStorage("endDateTime");
@@ -86,8 +105,9 @@ export default function Content() {
                     maxDate={endDate ? endDate : undefined}
                     selected={startDate}
                     onChange={(date) => {
-                      setEndDate(date);
-                      setToLocalStorage("endDateTime", date?.getTime());
+                      setStartDate(date);
+                      setToLocalStorage("startDateTime", date?.getTime());
+                      setDaysCompletedCount(0);
                     }}
                     className="py-2 text-xl text-center text-white bg-transparent border-b-2 border-white border-solid outline-none"
                     placeholderText="Click to select a date"
@@ -113,15 +133,25 @@ export default function Content() {
                 </div>
               </div>
             </div>
-            <div className="flex items-end gap-2">
+            <StyledGridButtonLayout>
+              <button
+                type="button"
+                disabled={startTodayDateDayDifference <= daysCompletedCount}
+                className={`px-6 py-3 duration-150 bg-transparent border-2 border-solid rounded-lg hover:bg-slate-700 border-slate-300
+                ${
+                  startTodayDateDayDifference > daysCompletedCount
+                    ? "opacity-100"
+                    : "opacity-100 pointer-events-none"
+                }}`}
+                onClick={() => {
+                  changeDaysCompletedCount(startTodayDateDayDifference);
+                }}
+              >
+                Check all to this day
+              </button>
               <button
                 onClick={() => {
-                  setToLocalStorage(
-                    "daysCompletedCount",
-                    daysCompletedCount + 1
-                  );
-                  setDaysCompletedCount((old) => old + 1);
-                  console.log(daysCompletedCount);
+                  setDaysCompletedCount(daysCompletedCount + 1);
                 }}
                 className="flex items-center gap-2 px-8 py-4 duration-150 bg-blue-500 rounded-md hover:bg-blue-700 active:scale-90"
               >
@@ -130,27 +160,14 @@ export default function Content() {
               <button
                 type="button"
                 onClick={() => {
-                  setToLocalStorage(
-                    "daysCompletedCount",
-                    (function () {
-                      if (daysCompletedCount !== 0) {
-                        return daysCompletedCount - 1;
-                      }
-                      return daysCompletedCount;
-                    })()
-                  );
-                  setDaysCompletedCount((old) => {
-                    if (old !== 0) {
-                      return old - 1;
-                    }
-                    return old;
-                  });
+                  if (daysCompletedCount > 0)
+                    setDaysCompletedCount(daysCompletedCount - 1);
                 }}
                 className="grid w-8 duration-150 bg-transparent border-2 border-solid rounded-lg hover:bg-slate-700 aspect-square border-slate-300 place-content-center"
               >
                 <span>-</span>
               </button>
-            </div>
+            </StyledGridButtonLayout>
           </div>
           <div className="grid w-full grid-cols-8 gap-2 px-6">{daysArray}</div>
         </>
